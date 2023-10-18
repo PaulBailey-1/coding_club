@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "948684708885",
+    "project_id": "coding-club-38164",
+    "storage_bucket": "coding-club-38164.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:948684708885:android:0ec99fe38b8f53dd29421c",
+        "android_client_info": {
+          "package_name": "com.example.coding_club"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDONpsqllnXURMbvPAxJSLNWAY56TtO9ps"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

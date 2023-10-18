@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../service.dart';
 import 'profile.dart';
 
 class JoinPage extends StatefulWidget {
@@ -43,9 +44,9 @@ class _JoinPageState extends State<JoinPage> {
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 ElevatedButton(
-                    onPressed: () {
-                      // checkJoinCode(codeController.text);
-                      if (true) {
+                    onPressed: () async {
+                      if (await Service().joinClub(codeController.text)) {
+                        if (!context.mounted) return;
                         Navigator.of(context).pushReplacement(
                           MaterialPageRoute(
                             builder: (context) => const ProfilePage(),
