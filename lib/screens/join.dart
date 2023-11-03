@@ -1,18 +1,16 @@
-
+import 'package:coding_club/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:provider/provider.dart';
 
-import '../service.dart';
-import 'profile.dart';
-
-class JoinPage extends StatefulWidget {
-  const JoinPage({super.key});
+class JoinScreen extends StatefulWidget {
+  const JoinScreen({super.key});
 
   @override
-  State<JoinPage> createState() => _JoinPageState();
+  State<JoinScreen> createState() => _JoinScreenState();
 }
 
-class _JoinPageState extends State<JoinPage> {
+class _JoinScreenState extends State<JoinScreen> {
   final codeController = TextEditingController();
 
   @override
@@ -45,15 +43,13 @@ class _JoinPageState extends State<JoinPage> {
                 const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 ElevatedButton(
                     onPressed: () async {
-                      if (await Service().joinClub(codeController.text)) {
+                      if (await Provider.of<UserModel>(context, listen: false).joinClub(codeController.text)) {
                         if (!context.mounted) return;
-                        Navigator.of(context).pushReplacement(
-                          MaterialPageRoute(
-                            builder: (context) => const ProfilePage(),
-                          ),
-                        );
+                        Navigator.of(context).pop();
                       } else {
-                        Fluttertoast.showToast( msg: "Invalid Join Code", );
+                        Fluttertoast.showToast(
+                          msg: "Invalid Join Code",
+                        );
                       }
                     },
                     child: const Text('Join', style: TextStyle(fontSize: 20))),

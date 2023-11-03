@@ -1,9 +1,9 @@
-import 'dart:developer';
-
-import 'package:coding_club/pages/join.dart';
+import 'package:coding_club/models/user.dart';
+import 'package:coding_club/screens/clubs.dart';
 
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -11,8 +11,8 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  Service();
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+      create: (context) => UserModel(), child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const JoinPage(),
+      home: const ClubsScreen(),
     );
   }
 }
