@@ -8,6 +8,7 @@ So far, we have covered:
 3. Connecting to a Firebase backend
 4. Using authentication
 5. Using a database (Firestore)
+6. Asynchronous programming
 
 Flutter resources:
 
