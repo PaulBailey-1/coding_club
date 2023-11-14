@@ -30,9 +30,18 @@ class _ClubsScreenState extends State<ClubsScreen> {
       }
       return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Coding Club'),
-        ),
+            backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+            title: const Text('Clubs'),
+            actions: <Widget>[
+              IconButton(
+                icon: const Icon(Icons.account_circle),
+                tooltip: 'Show Snackbar',
+                onPressed: () {
+                  Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => const ProfileScreen()));
+                },
+              )
+            ]),
         body: Container(
             margin: const EdgeInsets.all(16),
             child: user.clubs.isNotEmpty
@@ -49,7 +58,8 @@ class _ClubsScreenState extends State<ClubsScreen> {
                   MaterialPageRoute(builder: (context) => const JoinScreen()));
             },
             child: Container(
-                padding: const EdgeInsets.all(16), child: const Text("Join Club")),
+                padding: const EdgeInsets.all(16),
+                child: const Text("Join Club")),
           ),
         ),
       );

@@ -2,6 +2,7 @@ import 'package:coding_club/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 class JoinScreen extends StatefulWidget {
   const JoinScreen({super.key});
@@ -11,7 +12,7 @@ class JoinScreen extends StatefulWidget {
 }
 
 class _JoinScreenState extends State<JoinScreen> {
-  final codeController = TextEditingController();
+  final codeController = MaskedTextController(mask: '000-000');
 
   @override
   void dispose() {
@@ -24,7 +25,7 @@ class _JoinScreenState extends State<JoinScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Join your Club'),
+        title: const Text('Join a club'),
       ),
       body: Center(
         child: Card(
@@ -39,11 +40,13 @@ class _JoinScreenState extends State<JoinScreen> {
                   controller: codeController,
                   textAlign: TextAlign.center,
                   decoration: const InputDecoration(hintText: 'XXX-XXX'),
+                  keyboardType: TextInputType.number,
                 ),
                 const Padding(padding: EdgeInsets.symmetric(vertical: 8)),
                 ElevatedButton(
                     onPressed: () async {
-                      if (await Provider.of<UserModel>(context, listen: false).joinClub(codeController.text)) {
+                      if (await Provider.of<UserModel>(context, listen: false)
+                          .joinClub(codeController.text)) {
                         if (!context.mounted) return;
                         Navigator.of(context).pop();
                       } else {

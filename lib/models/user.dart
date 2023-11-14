@@ -11,7 +11,7 @@ class UserModel extends ChangeNotifier {
   String _name = "";
   String _tagline = "";
   List<String> _clubIds = [];
-  List<Club> _clubs = [];
+  final List<Club> _clubs = [];
 
   String get name => _name;
   String get tagline => _tagline;
