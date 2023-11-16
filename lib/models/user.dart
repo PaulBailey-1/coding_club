@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class UserModel extends ChangeNotifier {
@@ -18,6 +19,32 @@ class UserModel extends ChangeNotifier {
   List<Club> get clubs => _clubs;
   bool get loaded => _uid != null;
 
+  Future<void> _getClub(String clubId) async {
+    var doc = await db.collection("clubs").doc(clubId).get();
+    if (doc.exists) {
+      var latestMessageQuery = await db
+          .collection("clubs")
+          .doc(clubId)
+          .collection("thread")
+          .orderBy("time")
+          .limit(1)
+          .get();
+      String latestMessage = '';
+      if (latestMessageQuery.size > 0) {
+        var latestMessageSnapshot = latestMessageQuery.docs[0];
+        var userName = (await db
+            .collection('users')
+            .doc(latestMessageSnapshot.get('user_id'))
+            .get())['name'];
+        latestMessage = '$userName: ${latestMessageSnapshot.get('message')}';
+      }
+      var clubData = doc.data();
+      _clubs.add(Club(doc.get("name"),
+          lastMessage: latestMessage,
+          img: clubData!.containsKey('img') ? clubData['img'] : ''));
+    }
+  }
+
   Future<bool> load(String uid) async {
     _uid = uid;
 
@@ -34,8 +61,7 @@ class UserModel extends ChangeNotifier {
     _clubIds = data?['clubs'] is Iterable ? List.from(data?['clubs']) : [];
 
     for (var clubId in _clubIds) {
-      var doc = await db.collection("clubs").doc(clubId).get();
-      doc.exists ? _clubs.add(Club(doc.data()!)) : null;
+      await _getClub(clubId);
     }
 
     notifyListeners();
@@ -47,7 +73,6 @@ class UserModel extends ChangeNotifier {
     _tagline = tagline ?? "";
 
     _userDocRef.update({"name": _name, "tagline": _tagline});
-
     notifyListeners();
   }
 
@@ -64,15 +89,29 @@ class UserModel extends ChangeNotifier {
       "clubs": FieldValue.arrayUnion([code])
     });
     _clubIds.add(code);
-    _clubs.add(Club(clubDoc.data()!));
+    await _getClub(code);
     notifyListeners();
     return true;
+  }
+
+  Future<void> preloadImages(BuildContext context) async {
+    List<Future<void>> futures = [];
+    for (Club club in _clubs) {
+      if (club.imgUrl.isNotEmpty) {
+        futures.add(precacheImage(NetworkImage(club.imgUrl), context));
+      }
+    }
+    Future.wait(futures);
   }
 }
 
 class Club {
   String name = "";
-  Club(Map<String, dynamic> data) {
-    name = data["name"];
+  String latestMessage = "";
+  String imgUrl = "";
+  Club(String name_, {String? lastMessage, String? img}) {
+    name = name_;
+    latestMessage = lastMessage ?? '';
+    imgUrl = img ?? '';
   }
 }

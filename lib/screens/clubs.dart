@@ -19,10 +19,13 @@ class _ClubsScreenState extends State<ClubsScreen> {
       if (!user.loaded) {
         Auth.signIn().then((uid) async {
           if (uid != null) {
-            if (!await user.load(uid)) {
-              if (!context.mounted) return;
+            bool userLoaded = await user.load(uid);
+            if (!context.mounted) return;
+            if (!userLoaded) {
               Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => const ProfileScreen()));
+            } else {
+              await user.preloadImages(context);
             }
           }
         });
@@ -69,7 +72,11 @@ class _ClubsScreenState extends State<ClubsScreen> {
   Widget getClubTiles(UserModel user) {
     List<ListTile> tiles = [];
     for (var club in user.clubs) {
-      tiles.add(ListTile(title: Text(club.name)));
+      tiles.add(ListTile(
+        title: Text(club.name),
+        subtitle: Text(club.latestMessage),
+        leading: club.imgUrl != '' ? Image.network(club.imgUrl) : null,
+      ));
     }
     return ListView(
       children: tiles,
